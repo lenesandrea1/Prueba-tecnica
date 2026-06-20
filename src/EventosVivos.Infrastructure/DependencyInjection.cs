@@ -1,6 +1,8 @@
 using EventosVivos.Application.Common;
+using EventosVivos.Infrastructure.Hosting;
 using EventosVivos.Infrastructure.Persistence;
 using EventosVivos.Infrastructure.Repositories;
+using EventosVivos.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +23,10 @@ public static class DependencyInjection
 
         services.AddScoped<IEventRepository, EventRepository>();
         services.AddScoped<IVenueRepository, VenueRepository>();
+        services.AddScoped<IReservationRepository, ReservationRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped<IReservationCodeGenerator, ReservationCodeGenerator>();
+        services.AddHostedService<EventCompletionHostedService>();
 
         return services;
     }
