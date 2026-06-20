@@ -26,3 +26,8 @@ publish/
 TestResults/
 coverage/
 *.log
+
+## Node
+node_modules/
+dist/
+.angular/
