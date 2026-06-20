@@ -1,0 +1,12 @@
+[build]
+  base = "client/eventos-vivos-web"
+  command = "npm ci && node scripts/set-api-url.js && npm run build"
+  publish = "dist/eventos-vivos-web/browser"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

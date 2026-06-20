@@ -148,6 +148,23 @@ cd client/eventos-vivos-web && npm run build
 
 Las pruebas de integración requieren PostgreSQL (`docker compose up -d`). En CI se ejecutan automáticamente con GitHub Actions.
 
+## Despliegue en la nube (gratis)
+
+Guía paso a paso en **[DEPLOYMENT.md](./DEPLOYMENT.md)**.
+
+| Capa | Proveedor |
+|------|-----------|
+| PostgreSQL | Neon (free) |
+| API .NET | Render (free, Docker) |
+| Angular | Netlify (free) |
+
+**URLs en producción** *(completar tras desplegar)*:
+
+| Servicio | URL |
+|----------|-----|
+| Frontend | pendiente |
+| API | pendiente |
+
 ## Migraciones EF
 
 ```bash
