@@ -23,6 +23,7 @@ public static class ExceptionHandlingExtensions
                 var (statusCode, title) = exception switch
                 {
                     InvalidEventScheduleException => (StatusCodes.Status400BadRequest, "Invalid event schedule."),
+                    InvalidReservationException => (StatusCodes.Status400BadRequest, "Invalid reservation request."),
                     NotFoundException => (StatusCodes.Status404NotFound, "Resource not found."),
                     ConflictException => (StatusCodes.Status409Conflict, "Business rule conflict."),
                     _ => (StatusCodes.Status500InternalServerError, "Unexpected server error.")
