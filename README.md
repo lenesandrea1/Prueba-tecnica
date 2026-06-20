@@ -14,28 +14,29 @@ La solución cubre la creación y consulta de eventos, el ciclo completo de rese
 | **Clean Architecture** | Dominio sin dependencias de infraestructura; aplicación define puertos; infraestructura implementa adaptadores. |
 | **CQRS ligero** | Separación entre comando (`CreateEvent`) y consulta (`ListEvents`) según responsabilidades distintas. |
 | **ProblemDetails** | Errores HTTP predecibles (400/404/409) alineados con validaciones de negocio. |
+| **Angular 19 standalone** | SPA con formularios reactivos, Material y lazy loading por feature. |
 
 ## Estructura del código
 
-| Proyecto | Rol |
-|----------|-----|
+| Proyecto / carpeta | Rol |
+|--------------------|-----|
 | `EventosVivos.Domain` | Entidades, reglas RN-01 a RN-07, excepciones de dominio |
 | `EventosVivos.Application` | Handlers, puertos y criterios de búsqueda |
 | `EventosVivos.Infrastructure` | EF Core, PostgreSQL, seed y migraciones |
-| `EventosVivos.Api` | Controllers HTTP, Swagger, validación FluentValidation |
+| `EventosVivos.Api` | Controllers HTTP, Swagger, CORS, FluentValidation |
 | `EventosVivos.Tests.Unit` | Dominio, guards y handlers con dobles |
+| `EventosVivos.Tests.Integration` | Flujos HTTP end-to-end con PostgreSQL |
+| `client/eventos-vivos-web` | Frontend Angular (listado, crear, reservar, admin, reporte) |
 
 ## Datos de seed
 
-Tras migrar con base vacía se cargan los **venues del enunciado** y tres eventos demo:
+Tras migrar con base vacía se cargan los **venues del enunciado**:
 
 | Id | Nombre | Capacidad | Ciudad |
 |----|--------|-----------|--------|
 | 1 | Auditorio Central | 200 | Bogotá |
 | 2 | Sala Norte | 50 | Bogotá |
 | 3 | Arena Sur | 500 | Medellín |
-
-Eventos demo con GUIDs estables en `KnownIds` para pruebas manuales vía Swagger.
 
 ## Reglas implementadas
 
@@ -63,16 +64,26 @@ Eventos demo con GUIDs estables en `KnownIds` para pruebas manuales vía Swagger
 
 ## Puesta en marcha
 
+### Backend
+
 ```bash
 docker compose up -d
-dotnet run --project src/EventosVivos.Api
+dotnet run --project src/EventosVivos.Api --launch-profile http
 ```
 
-Abre Swagger en la URL HTTPS/HTTP de `launchSettings.json` (`/swagger`).
+Swagger: `http://localhost:5165/swagger`
 
-Requisitos: **.NET 8 SDK**, **Docker** para PostgreSQL local.
+### Frontend
 
-Cadena por defecto en `appsettings.json`: `eventos` / `local`, base `eventosvivos`.
+```bash
+cd client/eventos-vivos-web
+npm install
+npm start
+```
+
+App: `http://localhost:4200` (consume la API en `http://localhost:5165/api`).
+
+Requisitos: **.NET 8 SDK**, **Node.js 22+**, **Docker** para PostgreSQL local.
 
 ## Ejemplos HTTP
 
@@ -132,7 +143,10 @@ GET /api/events/{eventId}/occupancy-report
 ```bash
 dotnet build
 dotnet test
+cd client/eventos-vivos-web && npm run build
 ```
+
+Las pruebas de integración requieren PostgreSQL (`docker compose up -d`). En CI se ejecutan automáticamente con GitHub Actions.
 
 ## Migraciones EF
 
