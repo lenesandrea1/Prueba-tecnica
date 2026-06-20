@@ -4,7 +4,7 @@ Sistema de reservas para **EventosVivos**: startup que organiza eventos cultural
 
 ## Descripción
 
-La solución cubre la creación y consulta de eventos con reglas de negocio explícitas (capacidad de venue, solapamiento de horarios, restricciones de fin de semana) y expone una API REST documentada con Swagger.
+La solución cubre la creación y consulta de eventos, el ciclo completo de reservas (crear, confirmar pago, cancelar) y reportes de ocupación, con reglas de negocio explícitas en el dominio.
 
 ## Por qué esta arquitectura
 
@@ -19,7 +19,7 @@ La solución cubre la creación y consulta de eventos con reglas de negocio expl
 
 | Proyecto | Rol |
 |----------|-----|
-| `EventosVivos.Domain` | Entidades, reglas RN-01 a RN-03, excepciones de dominio |
+| `EventosVivos.Domain` | Entidades, reglas RN-01 a RN-07, excepciones de dominio |
 | `EventosVivos.Application` | Handlers, puertos y criterios de búsqueda |
 | `EventosVivos.Infrastructure` | EF Core, PostgreSQL, seed y migraciones |
 | `EventosVivos.Api` | Controllers HTTP, Swagger, validación FluentValidation |
@@ -37,14 +37,29 @@ Tras migrar con base vacía se cargan los **venues del enunciado** y tres evento
 
 Eventos demo con GUIDs estables en `KnownIds` para pruebas manuales vía Swagger.
 
-## Reglas implementadas (Fase 1)
+## Reglas implementadas
 
 | Regla | Descripción |
 |-------|-------------|
 | **RN-01** | Capacidad del evento ≤ capacidad del venue |
 | **RN-02** | Dos eventos activos no pueden solaparse en el mismo venue |
 | **RN-03** | En fin de semana el inicio no puede ser después de las 22:00 UTC |
-| **RN-06** | En listados, eventos pasados se reportan como `completado` |
+| **RN-04** | No se permiten reservas si el evento inicia en menos de 1 hora |
+| **RN-05** | Eventos con precio > $100 limitan a 10 entradas por transacción |
+| **RN-06** | Eventos activos pasados se marcan `completado` automáticamente (job cada minuto) |
+| **RN-07** | Cancelar confirmada con < 48 h antes del evento → estado `perdida` (no libera cupo) |
+
+### Requerimientos funcionales
+
+| RF | Endpoint |
+|----|----------|
+| RF-01 Crear evento | `POST /api/events` |
+| RF-02 Listar eventos | `GET /api/events` |
+| RF-03 Reservar entrada | `POST /api/events/{eventId}/reservations` |
+| RF-04 Confirmar pago | `POST /api/reservations/{id}/confirm-payment` |
+| RF-05 Cancelar reserva | `POST /api/reservations/{id}/cancel` |
+| RF-06 Reporte ocupación | `GET /api/events/{eventId}/occupancy-report` |
+| Venues de referencia | `GET /api/venues` |
 
 ## Puesta en marcha
 
@@ -86,6 +101,31 @@ Content-Type: application/json
 ```
 
 Tipos: `1` conferencia, `2` taller, `3` concierto.
+
+**Reservar entradas:**
+
+```
+POST /api/events/{eventId}/reservations
+Content-Type: application/json
+
+{
+  "quantity": 2,
+  "buyerName": "Ana López",
+  "buyerEmail": "ana@example.com"
+}
+```
+
+**Confirmar pago (admin):**
+
+```
+POST /api/reservations/{reservationId}/confirm-payment
+```
+
+**Reporte de ocupación:**
+
+```
+GET /api/events/{eventId}/occupancy-report
+```
 
 ## Compilar y probar
 
