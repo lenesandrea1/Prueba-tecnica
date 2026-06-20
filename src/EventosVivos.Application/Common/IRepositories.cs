@@ -2,7 +2,6 @@ using EventosVivos.Domain.Entities;
 using EventosVivos.Domain.Enums;
 
 namespace EventosVivos.Application.Common;
-
 public interface IEventRepository
 {
     Task AddAsync(Event entity, CancellationToken cancellationToken = default);
@@ -21,6 +20,14 @@ public interface IVenueRepository
 {
     Task<Venue?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<Venue>> GetAllAsync(CancellationToken cancellationToken = default);
+}
+
+public interface IReservationRepository
+{
+    Task AddAsync(Reservation entity, CancellationToken cancellationToken = default);
+    Task<Reservation?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<Reservation>> GetByEventIdAsync(Guid eventId, CancellationToken cancellationToken = default);
+    Task<bool> ConfirmationCodeExistsAsync(string code, CancellationToken cancellationToken = default);
 }
 
 public interface IUnitOfWork
