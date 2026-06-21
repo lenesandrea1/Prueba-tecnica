@@ -51,14 +51,15 @@ public sealed class ReservationFlowTests : IClassFixture<EventosVivosWebApplicat
         }
 
         var utcNow = _factory.TimeProvider.GetUtcNow().UtcDateTime;
+        var start = UniqueStart(utcNow, venueId: 1, salt: 10);
         var createEventResponse = await _client.PostAsJsonAsync("/api/events", new
         {
             title = "Foro de Integración",
             description = "Evento creado desde prueba de integración end-to-end.",
             venueId = 1,
             maxCapacity = 40,
-            startAtUtc = utcNow.AddDays(10),
-            endAtUtc = utcNow.AddDays(10).AddHours(4),
+            startAtUtc = start,
+            endAtUtc = start.AddHours(4),
             ticketPrice = 75m,
             type = 1
         });
@@ -107,7 +108,7 @@ public sealed class ReservationFlowTests : IClassFixture<EventosVivosWebApplicat
         }
 
         var utcNow = _factory.TimeProvider.GetUtcNow().UtcDateTime;
-        var start = utcNow.AddDays(20);
+        var start = UniqueStart(utcNow, venueId: 2, salt: 20);
         var end = start.AddHours(3);
 
         var first = await _client.PostAsJsonAsync("/api/events", new
@@ -137,6 +138,12 @@ public sealed class ReservationFlowTests : IClassFixture<EventosVivosWebApplicat
         });
 
         overlapping.StatusCode.Should().Be(HttpStatusCode.Conflict);
+    }
+
+    private static DateTime UniqueStart(DateTime utcNow, int venueId, int salt)
+    {
+        var slot = (Environment.TickCount64 / 60_000 + salt + venueId * 17) % 5000;
+        return utcNow.AddDays(60 + slot).Date.AddHours(14);
     }
 
     private async Task<bool> DatabaseIsAvailableAsync()

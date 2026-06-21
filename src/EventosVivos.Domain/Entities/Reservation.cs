@@ -19,7 +19,6 @@ public sealed partial class Reservation
     public string? ConfirmationCode { get; private set; }
     public DateTime CreatedAtUtc { get; private set; }
     public DateTime? CancelledAtUtc { get; private set; }
-    public byte[] RowVersion { get; private set; } = [];
 
     private Reservation()
     {
@@ -42,7 +41,6 @@ public sealed partial class Reservation
         {
             Id = id,
             EventId = @event.Id,
-            Event = @event,
             Quantity = quantity,
             BuyerName = buyerName.Trim(),
             BuyerEmail = buyerEmail.Trim().ToLowerInvariant(),

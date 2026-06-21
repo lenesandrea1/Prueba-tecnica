@@ -17,7 +17,6 @@ public sealed class Event
     public decimal TicketPrice { get; private set; }
     public EventType Type { get; private set; }
     public EventStatus Status { get; private set; } = EventStatus.Activo;
-    public byte[] RowVersion { get; private set; } = [];
 
     private Event()
     {
@@ -51,7 +50,6 @@ public sealed class Event
             Title = title.Trim(),
             Description = description.Trim(),
             VenueId = venue.Id,
-            Venue = venue,
             MaxCapacity = maxCapacity,
             StartAtUtc = DateTime.SpecifyKind(startAtUtc, DateTimeKind.Utc),
             EndAtUtc = DateTime.SpecifyKind(endAtUtc, DateTimeKind.Utc),

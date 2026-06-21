@@ -19,7 +19,7 @@ public sealed class EventosVivosWebApplicationFactory : WebApplicationFactory<Pr
         builder.ConfigureAppConfiguration((_, config) =>
         {
             var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
-                ?? "Host=localhost;Port=5432;Database=eventosvivos;Username=eventos;Password=local";
+                ?? "Host=127.0.0.1;Port=55432;Database=eventosvivos;Username=eventos;Password=local";
 
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {

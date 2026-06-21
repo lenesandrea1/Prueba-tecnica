@@ -15,7 +15,6 @@ internal sealed class EventConfiguration : IEntityTypeConfiguration<Event>
         builder.Property(e => e.TicketPrice).HasPrecision(10, 2);
         builder.Property(e => e.Type).HasConversion<string>().HasMaxLength(20);
         builder.Property(e => e.Status).HasConversion<string>().HasMaxLength(20);
-        builder.Property(e => e.RowVersion).IsRowVersion();
 
         builder.HasOne(e => e.Venue)
             .WithMany()
