@@ -17,54 +17,26 @@ import { EVENT_STATUS_LABELS, OccupancyReport } from '../../../core/models/event
     } @else if (!report) {
       <p class="error">{{ error || 'Reporte no disponible.' }}</p>
     } @else {
-      <mat-card>
+      <mat-card class="glass-card">
         <mat-card-header>
           <mat-card-title>Reporte de ocupación</mat-card-title>
           <mat-card-subtitle>{{ report.eventTitle }}</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-          <dl class="metrics">
-            <div><dt>Capacidad máxima</dt><dd>{{ report.maxCapacity }}</dd></div>
-            <div><dt>Entradas vendidas</dt><dd>{{ report.soldTickets }}</dd></div>
-            <div><dt>Disponibles</dt><dd>{{ report.availableTickets }}</dd></div>
-            <div><dt>Ocupación</dt><dd>{{ report.occupancyPercentage / 100 | percent: '1.0-2' }}</dd></div>
-            <div><dt>Ingresos</dt><dd>{{ report.totalRevenue | currency: 'USD' }}</dd></div>
-            <div><dt>Estado evento</dt><dd>{{ statusLabels[report.eventStatus] }}</dd></div>
+          <dl class="metric-grid">
+            <div class="metric-item"><dt>Capacidad máxima</dt><dd>{{ report.maxCapacity }}</dd></div>
+            <div class="metric-item"><dt>Entradas vendidas</dt><dd>{{ report.soldTickets }}</dd></div>
+            <div class="metric-item"><dt>Disponibles</dt><dd>{{ report.availableTickets }}</dd></div>
+            <div class="metric-item"><dt>Ocupación</dt><dd>{{ report.occupancyPercentage / 100 | percent: '1.0-2' }}</dd></div>
+            <div class="metric-item"><dt>Ingresos</dt><dd>{{ report.totalRevenue | currency: 'USD' }}</dd></div>
+            <div class="metric-item"><dt>Estado evento</dt><dd>{{ statusLabels[report.eventStatus] }}</dd></div>
           </dl>
-          <a mat-button [routerLink]="['/events', report.eventId]">Volver al evento</a>
+          <a mat-button class="btn-text" [routerLink]="['/events', report.eventId]">Volver al evento</a>
         </mat-card-content>
       </mat-card>
     }
   `,
-  styles: `
-    .metrics {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    dt {
-      font-size: 0.85rem;
-      color: #5f6368;
-    }
-
-    dd {
-      margin: 0.25rem 0 0;
-      font-size: 1.25rem;
-      font-weight: 600;
-    }
-
-    .center {
-      display: flex;
-      justify-content: center;
-      padding: 2rem;
-    }
-
-    .error {
-      color: #b3261e;
-    }
-  `,
+  styles: ``,
 })
 export class OccupancyReportComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

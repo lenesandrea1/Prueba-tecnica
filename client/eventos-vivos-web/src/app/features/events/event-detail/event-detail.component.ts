@@ -7,6 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { RouterLink } from '@angular/router';
 import { EventsApiService } from '../../../core/services/events-api.service';
 import { ReservationsApiService } from '../../../core/services/reservations-api.service';
 import {
@@ -36,40 +37,40 @@ import {
     } @else if (!event) {
       <p class="error">{{ error || 'Evento no encontrado.' }}</p>
     } @else {
-      <mat-card class="info">
+      <mat-card class="glass-card info">
         <mat-card-header>
           <mat-card-title>{{ event.title }}</mat-card-title>
           <mat-card-subtitle>{{ typeLabels[event.type] }} · {{ statusLabels[event.status] }}</mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-          <p>{{ event.description }}</p>
-          <ul>
+          <p class="description">{{ event.description }}</p>
+          <ul class="details">
             <li><strong>Venue:</strong> {{ event.venueName }} ({{ event.venueCity }})</li>
             <li><strong>Capacidad:</strong> {{ event.maxCapacity }}</li>
             <li><strong>Inicio:</strong> {{ event.startAtUtc | date: 'medium' }}</li>
             <li><strong>Fin:</strong> {{ event.endAtUtc | date: 'medium' }}</li>
             <li><strong>Precio:</strong> {{ event.ticketPrice | currency: 'USD' }}</li>
           </ul>
-          <a mat-button [routerLink]="['/events', event.id, 'report']">Ver reporte de ocupación</a>
+          <a mat-button class="btn-text" [routerLink]="['/events', event.id, 'report']">Ver reporte de ocupación</a>
         </mat-card-content>
       </mat-card>
 
       @if (event.status === activeStatus) {
-        <mat-card>
+        <mat-card class="glass-card">
           <mat-card-header>
             <mat-card-title>Reservar entradas</mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <form [formGroup]="reservationForm" class="form" (ngSubmit)="reserve()">
-              <mat-form-field>
+              <mat-form-field appearance="fill">
                 <mat-label>Cantidad</mat-label>
                 <input matInput type="number" formControlName="quantity" min="1" />
               </mat-form-field>
-              <mat-form-field>
+              <mat-form-field appearance="fill">
                 <mat-label>Nombre comprador</mat-label>
                 <input matInput formControlName="buyerName" />
               </mat-form-field>
-              <mat-form-field>
+              <mat-form-field appearance="fill">
                 <mat-label>Email comprador</mat-label>
                 <input matInput type="email" formControlName="buyerEmail" />
               </mat-form-field>
@@ -79,9 +80,10 @@ import {
               }
               @if (reservationSuccess) {
                 <p class="success">{{ reservationSuccess }}</p>
+                <a mat-stroked-button color="primary" routerLink="/reservations">Ir a gestión de reservas</a>
               }
 
-              <button mat-flat-button color="primary" type="submit" [disabled]="reservationForm.invalid || reserving">
+              <button mat-flat-button color="primary" class="btn-gradient submit-btn" type="submit" [disabled]="reservationForm.invalid || reserving">
                 Reservar
               </button>
             </form>
@@ -95,24 +97,40 @@ import {
       margin-bottom: 1rem;
     }
 
+    .description {
+      line-height: 1.6;
+      color: var(--ev-text-muted);
+    }
+
+    .details {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .details li {
+      padding: 0.6rem 1rem;
+      background: rgba(237, 232, 255, 0.45);
+      border-radius: 10px;
+      border: 1px solid rgba(108, 74, 182, 0.08);
+    }
+
     .form {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 0.75rem;
+      gap: 0.5rem 1rem;
     }
 
-    .center {
-      display: flex;
-      justify-content: center;
-      padding: 2rem;
+    .submit-btn {
+      grid-column: 1 / -1;
+      justify-self: start;
+      margin-top: 0.5rem;
     }
 
-    .error {
-      color: #b3261e;
-    }
-
+    .error,
     .success {
-      color: #1e8e3e;
       grid-column: 1 / -1;
     }
   `,

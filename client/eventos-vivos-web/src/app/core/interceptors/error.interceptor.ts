@@ -1,5 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { catchError, throwError } from 'rxjs';
+import { translateApiError } from '../utils/api-error-messages';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) =>
   next(req).pipe(
@@ -8,8 +9,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) =>
         error.error?.detail ??
         error.error?.title ??
         error.message ??
-        'Unexpected error';
+        'Error inesperado';
 
-      return throwError(() => new Error(detail));
+      return throwError(() => new Error(translateApiError(detail)));
     }),
   );

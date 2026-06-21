@@ -1,46 +1,38 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, MatToolbarModule, MatButtonModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, MatButtonModule],
   template: `
-    <mat-toolbar color="primary">
-      <span class="brand">EventosVivos</span>
-      <nav>
-        <a mat-button routerLink="/events" routerLinkActive="active">Eventos</a>
-        <a mat-button routerLink="/events/new" routerLinkActive="active">Crear evento</a>
-        <a mat-button routerLink="/reservations" routerLinkActive="active">Reservas</a>
-      </nav>
-    </mat-toolbar>
+    <div class="app-shell">
+      <div class="aurora-bg" aria-hidden="true">
+        <div class="aurora-blob blob-1"></div>
+        <div class="aurora-blob blob-2"></div>
+        <div class="aurora-blob blob-3"></div>
+        <div class="dot-grid"></div>
+        <span class="bg-watermark">EVENTOS</span>
+      </div>
 
-    <main class="page">
-      <router-outlet />
-    </main>
-  `,
-  styles: `
-    .brand {
-      font-weight: 600;
-      margin-right: 1.5rem;
-    }
+      <header class="glass-nav">
+        <a class="brand" routerLink="/inicio">EventosVivos</a>
+        <nav>
+          <a routerLink="/inicio" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+          <a routerLink="/events" routerLinkActive="active">Eventos</a>
+          <a routerLink="/events/new" routerLinkActive="active">Crear evento</a>
+          <a routerLink="/reservations" routerLinkActive="active">Reservas</a>
+        </nav>
+        <a mat-flat-button color="primary" class="btn-gradient nav-cta" routerLink="/events/new">
+          Nuevo evento
+        </a>
+      </header>
 
-    nav {
-      display: flex;
-      gap: 0.25rem;
-    }
-
-    .active {
-      background: rgba(255, 255, 255, 0.12);
-    }
-
-    .page {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 1.5rem;
-    }
+      <main class="page">
+        <router-outlet />
+      </main>
+    </div>
   `,
 })
 export class ShellComponent {}

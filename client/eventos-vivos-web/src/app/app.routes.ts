@@ -4,9 +4,20 @@ import { ShellComponent } from './layout/shell/shell.component';
 export const routes: Routes = [
   {
     path: '',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('./features/loading/loading-page.component').then((m) => m.LoadingPageComponent),
+  },
+  {
+    path: '',
     component: ShellComponent,
     children: [
-      { path: '', redirectTo: 'events', pathMatch: 'full' },
+      {
+        path: 'inicio',
+        loadComponent: () =>
+          import('./features/home/home-page.component').then((m) => m.HomePageComponent),
+      },
+      { path: '', redirectTo: 'inicio', pathMatch: 'full' },
       {
         path: 'events',
         loadComponent: () =>

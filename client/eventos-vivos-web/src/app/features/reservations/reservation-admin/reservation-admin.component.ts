@@ -1,10 +1,17 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { ReservationsApiService } from '../../../core/services/reservations-api.service';
+import { isValidGuid } from '../../../core/utils/api-error-messages';
+
+function reservationIdValidator(control: AbstractControl): ValidationErrors | null {
+  const value = (control.value as string | null)?.trim() ?? '';
+  if (!value) return null;
+  return isValidGuid(value) ? null : { invalidGuid: true };
+}
 
 @Component({
   selector: 'app-reservation-admin',
@@ -17,17 +24,25 @@ import { ReservationsApiService } from '../../../core/services/reservations-api.
     MatButtonModule,
   ],
   template: `
-    <mat-card>
+    <mat-card class="glass-card">
       <mat-card-header>
         <mat-card-title>Gestión de reservas</mat-card-title>
-        <mat-card-subtitle>Confirmar pagos o cancelar reservas por ID</mat-card-subtitle>
+        <mat-card-subtitle>Confirmar pagos o cancelar reservas por UUID</mat-card-subtitle>
       </mat-card-header>
 
       <mat-card-content>
+        <p class="hint">
+          Tras reservar entradas en un evento, copia el <strong>ID de reserva</strong> (UUID) del mensaje de éxito
+          y pégalo aquí. No uses texto libre como "testeo".
+        </p>
+
         <form [formGroup]="form" class="form">
-          <mat-form-field class="full">
-            <mat-label>ID de reserva</mat-label>
-            <input matInput formControlName="reservationId" placeholder="UUID de la reserva" />
+          <mat-form-field appearance="fill" class="full">
+            <mat-label>ID de reserva (UUID)</mat-label>
+            <input matInput formControlName="reservationId" placeholder="3fa85f64-5717-4562-b3fc-2c963f66afa6" />
+            @if (form.controls.reservationId.hasError('invalidGuid')) {
+              <mat-error>Ingresa un UUID válido (36 caracteres con guiones).</mat-error>
+            }
           </mat-form-field>
 
           @if (message) {
@@ -38,6 +53,7 @@ import { ReservationsApiService } from '../../../core/services/reservations-api.
             <button
               mat-flat-button
               color="primary"
+              class="btn-gradient"
               type="button"
               [disabled]="form.invalid || loading"
               (click)="confirmPayment()"
@@ -69,18 +85,16 @@ import { ReservationsApiService } from '../../../core/services/reservations-api.
       width: 100%;
     }
 
+    .hint {
+      margin: 0 0 1rem;
+      color: var(--ev-text-muted);
+      line-height: 1.5;
+    }
+
     .actions {
       display: flex;
       gap: 0.75rem;
       flex-wrap: wrap;
-    }
-
-    .success {
-      color: #1e8e3e;
-    }
-
-    .error {
-      color: #b3261e;
     }
   `,
 })
@@ -93,7 +107,7 @@ export class ReservationAdminComponent {
   messageType: 'success' | 'error' = 'success';
 
   form = this.fb.group({
-    reservationId: ['', Validators.required],
+    reservationId: ['', [Validators.required, reservationIdValidator]],
   });
 
   confirmPayment(): void {

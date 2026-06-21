@@ -37,7 +37,7 @@ import {
     MatProgressSpinnerModule,
   ],
   template: `
-    <mat-card>
+    <mat-card class="glass-card">
       <mat-card-header>
         <mat-card-title>Eventos</mat-card-title>
         <mat-card-subtitle>Consulta y filtra eventos disponibles</mat-card-subtitle>
@@ -45,12 +45,12 @@ import {
 
       <mat-card-content>
         <form [formGroup]="filters" class="filters" (ngSubmit)="search()">
-          <mat-form-field>
+          <mat-form-field appearance="fill">
             <mat-label>Búsqueda</mat-label>
             <input matInput formControlName="search" placeholder="Título" />
           </mat-form-field>
 
-          <mat-form-field>
+          <mat-form-field appearance="fill">
             <mat-label>Tipo</mat-label>
             <mat-select formControlName="type">
               <mat-option [value]="null">Todos</mat-option>
@@ -60,7 +60,7 @@ import {
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field>
+          <mat-form-field appearance="fill">
             <mat-label>Venue</mat-label>
             <mat-select formControlName="venueId">
               <mat-option [value]="null">Todos</mat-option>
@@ -70,7 +70,7 @@ import {
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field>
+          <mat-form-field appearance="fill">
             <mat-label>Estado</mat-label>
             <mat-select formControlName="status">
               <mat-option [value]="null">Todos</mat-option>
@@ -80,7 +80,7 @@ import {
             </mat-select>
           </mat-form-field>
 
-          <button mat-flat-button color="primary" type="submit">Filtrar</button>
+          <button mat-flat-button color="primary" class="btn-gradient filter-btn" type="submit">Filtrar</button>
         </form>
 
         @if (loading) {
@@ -88,7 +88,7 @@ import {
         } @else if (error) {
           <p class="error">{{ error }}</p>
         } @else {
-          <table mat-table [dataSource]="events" class="table">
+          <table mat-table [dataSource]="events" class="table glass-table">
             <ng-container matColumnDef="title">
               <th mat-header-cell *matHeaderCellDef>Título</th>
               <td mat-cell *matCellDef="let row">{{ row.title }}</td>
@@ -117,7 +117,7 @@ import {
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef></th>
               <td mat-cell *matCellDef="let row">
-                <a mat-button [routerLink]="['/events', row.id]">Ver</a>
+                <a mat-button class="btn-text" [routerLink]="['/events', row.id]">Ver</a>
               </td>
             </ng-container>
 
@@ -136,28 +136,20 @@ import {
     .filters {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 0.75rem;
+      gap: 0.5rem 1rem;
       align-items: start;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-btn {
+      align-self: end;
+      margin-bottom: 1.25rem;
     }
 
     .table {
       width: 100%;
-    }
-
-    .center {
-      display: flex;
-      justify-content: center;
-      padding: 2rem;
-    }
-
-    .error {
-      color: #b3261e;
-    }
-
-    .empty {
-      margin-top: 1rem;
-      color: #5f6368;
+      border-radius: 12px;
+      overflow: hidden;
     }
   `,
 })
