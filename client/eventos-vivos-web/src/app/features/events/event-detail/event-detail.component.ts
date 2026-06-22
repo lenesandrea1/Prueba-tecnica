@@ -7,7 +7,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { RouterLink } from '@angular/router';
 import { EventsApiService } from '../../../core/services/events-api.service';
 import { ReservationsApiService } from '../../../core/services/reservations-api.service';
 import {
